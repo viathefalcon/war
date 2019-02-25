@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
+            <connections>
+                <outlet property="menu" destination="CAW-oH-8US" id="F8O-Kd-xHc"/>
+            </connections>
+        </customObject>
+        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <menu id="CAW-oH-8US">
+            <items>
+                <menuItem title="About" keyEquivalent="a" id="YHa-0i-PEu">
+                    <connections>
+                        <action selector="about:" target="Voe-Tx-rLC" id="Jm0-Sz-6eT"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="gfX-9U-qBj"/>
+                <menuItem title="Quit" keyEquivalent="q" id="Fbu-7p-BAO">
+                    <connections>
+                        <action selector="terminate:" target="-3" id="dvI-Wh-MHb"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="190" y="371"/>
+        </menu>
+    </objects>
+</document>

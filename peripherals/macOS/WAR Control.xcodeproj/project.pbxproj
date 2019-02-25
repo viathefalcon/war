@@ -1,0 +1,371 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2F0ABD71213C04150050852C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F0ABD70213C04150050852C /* CoreBluetooth.framework */; };
+		2F0ABD73213C42760050852C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F0ABD72213C42760050852C /* IOKit.framework */; };
+		2F0ABD76213C430D0050852C /* MediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F0ABD75213C430D0050852C /* MediaKeyTap.m */; };
+		2F2524A2210F9F250044686A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F2524A1210F9F250044686A /* AppDelegate.m */; };
+		2F2524A4210F9F260044686A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F2524A3210F9F260044686A /* Assets.xcassets */; };
+		2F2524A7210F9F260044686A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F2524A5210F9F260044686A /* MainMenu.xib */; };
+		2F2524AA210F9F260044686A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F2524A9210F9F260044686A /* main.m */; };
+		2F25A178221C6C2100EB245C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2F25A17A221C6C2100EB245C /* InfoPlist.strings */; };
+		2FA664CC2156754300C755A7 /* BLEPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FA664CB2156754300C755A7 /* BLEPeripheral.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2F0ABD70213C04150050852C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		2F0ABD72213C42760050852C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		2F0ABD74213C430D0050852C /* MediaKeyTap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaKeyTap.h; sourceTree = "<group>"; };
+		2F0ABD75213C430D0050852C /* MediaKeyTap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaKeyTap.m; sourceTree = "<group>"; };
+		2F25249D210F9F250044686A /* WAR Control.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WAR Control.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F2524A0210F9F250044686A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2F2524A1210F9F250044686A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2F2524A3210F9F260044686A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2F2524A6210F9F260044686A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2F2524A8210F9F260044686A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2F2524A9210F9F260044686A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2F2524AB210F9F260044686A /* WAR_Control.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WAR_Control.entitlements; sourceTree = "<group>"; };
+		2F25A179221C6C2100EB245C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2FA664CA2156754300C755A7 /* BLEPeripheral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEPeripheral.h; sourceTree = "<group>"; };
+		2FA664CB2156754300C755A7 /* BLEPeripheral.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLEPeripheral.m; sourceTree = "<group>"; };
+		2FA664CD2156BC1700C755A7 /* MediaKeyTapDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaKeyTapDelegate.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2F25249A210F9F250044686A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2F0ABD73213C42760050852C /* IOKit.framework in Frameworks */,
+				2F0ABD71213C04150050852C /* CoreBluetooth.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2F0ABD6F213C04150050852C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2F0ABD72213C42760050852C /* IOKit.framework */,
+				2F0ABD70213C04150050852C /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2F252494210F9F250044686A = {
+			isa = PBXGroup;
+			children = (
+				2F25249F210F9F250044686A /* WAR Control */,
+				2F25249E210F9F250044686A /* Products */,
+				2F0ABD6F213C04150050852C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2F25249E210F9F250044686A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2F25249D210F9F250044686A /* WAR Control.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2F25249F210F9F250044686A /* WAR Control */ = {
+			isa = PBXGroup;
+			children = (
+				2F2524A0210F9F250044686A /* AppDelegate.h */,
+				2F2524A1210F9F250044686A /* AppDelegate.m */,
+				2F2524A3210F9F260044686A /* Assets.xcassets */,
+				2F2524A5210F9F260044686A /* MainMenu.xib */,
+				2F2524A8210F9F260044686A /* Info.plist */,
+				2F2524A9210F9F260044686A /* main.m */,
+				2F2524AB210F9F260044686A /* WAR_Control.entitlements */,
+				2F0ABD74213C430D0050852C /* MediaKeyTap.h */,
+				2F0ABD75213C430D0050852C /* MediaKeyTap.m */,
+				2FA664CA2156754300C755A7 /* BLEPeripheral.h */,
+				2FA664CB2156754300C755A7 /* BLEPeripheral.m */,
+				2FA664CD2156BC1700C755A7 /* MediaKeyTapDelegate.h */,
+				2F25A17A221C6C2100EB245C /* InfoPlist.strings */,
+			);
+			path = "WAR Control";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2F25249C210F9F250044686A /* WAR Control */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2F2524AE210F9F260044686A /* Build configuration list for PBXNativeTarget "WAR Control" */;
+			buildPhases = (
+				2F252499210F9F250044686A /* Sources */,
+				2F25249A210F9F250044686A /* Frameworks */,
+				2F25249B210F9F250044686A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "WAR Control";
+			productName = "WAR Control";
+			productReference = 2F25249D210F9F250044686A /* WAR Control.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2F252495210F9F250044686A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = "Stephen Higgins";
+				TargetAttributes = {
+					2F25249C210F9F250044686A = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+				};
+			};
+			buildConfigurationList = 2F252498210F9F250044686A /* Build configuration list for PBXProject "WAR Control" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2F252494210F9F250044686A;
+			productRefGroup = 2F25249E210F9F250044686A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2F25249C210F9F250044686A /* WAR Control */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2F25249B210F9F250044686A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2F2524A4210F9F260044686A /* Assets.xcassets in Resources */,
+				2F25A178221C6C2100EB245C /* InfoPlist.strings in Resources */,
+				2F2524A7210F9F260044686A /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2F252499210F9F250044686A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2F2524AA210F9F260044686A /* main.m in Sources */,
+				2FA664CC2156754300C755A7 /* BLEPeripheral.m in Sources */,
+				2F2524A2210F9F250044686A /* AppDelegate.m in Sources */,
+				2F0ABD76213C430D0050852C /* MediaKeyTap.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2F2524A5210F9F260044686A /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2F2524A6210F9F260044686A /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		2F25A17A221C6C2100EB245C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2F25A179221C6C2100EB245C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2F2524AC210F9F260044686A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2F2524AD210F9F260044686A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2F2524AF210F9F260044686A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = B336S3XM46;
+				INFOPLIST_FILE = "WAR Control/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.waveson.WAR-Control";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+			};
+			name = Debug;
+		};
+		2F2524B0210F9F260044686A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = B336S3XM46;
+				INFOPLIST_FILE = "WAR Control/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.waveson.WAR-Control";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2F252498210F9F250044686A /* Build configuration list for PBXProject "WAR Control" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F2524AC210F9F260044686A /* Debug */,
+				2F2524AD210F9F260044686A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2F2524AE210F9F260044686A /* Build configuration list for PBXNativeTarget "WAR Control" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F2524AF210F9F260044686A /* Debug */,
+				2F2524B0210F9F260044686A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2F252495210F9F250044686A /* Project object */;
+}
