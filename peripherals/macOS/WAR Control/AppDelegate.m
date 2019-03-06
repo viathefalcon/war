@@ -55,7 +55,13 @@
 {
 	// c.f. https://stackoverflow.com/a/20487957
 	[NSApp activateIgnoringOtherApps:YES];
-	[NSApp orderFrontStandardAboutPanel:self];
+
+	NSString *name = [NSBundle mainBundle].localizedInfoDictionary[@"CFBundleDisplayName"];
+	if (name){
+		[NSApp orderFrontStandardAboutPanelWithOptions:@{NSAboutPanelOptionApplicationName:name}];
+	}else{
+		[NSApp orderFrontStandardAboutPanel:self];
+	}
 }
 
 - (void)didSubscribe:(nonnull NSString *)central
