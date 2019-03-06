@@ -15,7 +15,6 @@
 
 #define ACTION_DOWN 0x40
 #define TWO_STEP 0x80
-#define WAR_PING 0x7F
 #define WAR_STOP 0xFF
 
 NSString *const SERVICE_UUID = @"ACB76F70-2B52-4234-AFB4-A8E9CEB925A4";
@@ -117,16 +116,6 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 	// Setup bluetooth
 	peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
 	atomic_store( &subscribedCentrals, 0 );
-}
-	
-- (void)touch
-{
-	if (self.active){
-		const int i = WAR_PING;
-		[self notify:((unsigned char) i)];
-	}else{
-		NSLog( @"[BLEPeripheral touch] (inactive)" );
-	}
 }
 
 - (void)stop

@@ -20,7 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface BLEPeripheral : NSObject <MediaKeyTapDelegate>
 - (instancetype)initWithDelegate:(NSObject<BLEPeripheralDelegate>*)aDelegate;
 - (void)start;
-- (void)touch;
 - (void)stop;
 @end
 

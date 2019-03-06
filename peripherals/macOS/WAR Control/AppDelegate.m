@@ -16,7 +16,6 @@
 	MediaKeyTap* tap;
 	BLEPeripheral* peripheral;
 	NSUserNotificationCenter* defaultUserNotificationCenter;
-	NSTimer* timer;
 }
 @property (weak) IBOutlet NSMenu *menu;
 
@@ -44,16 +43,10 @@
 	// Install the hook/handler
 	[peripheral start];
 	[tap install];
-
-	// Kick off the timer
-	NSString* interval = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"WARTouchInterval"];
-	NSLog( @"Read WARTouchInterval as %@", interval );
-	timer = [NSTimer scheduledTimerWithTimeInterval:[interval doubleValue] target:peripheral selector:@selector(touch) userInfo:nil repeats:YES];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-	[timer invalidate];
 	[peripheral stop];
 	[tap remove];
 }
