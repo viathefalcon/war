@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Waveson Audio Remote</string>
+    <string name="app_label">W.A.R.</string>
+
+    <string name="title_activity_main">W.A.R.</string>
+
+    <string name="title_start_button">Start</string>
+    <string name="title_stop_button">Stop</string>
+
+    <string name="notification_content_scanning">Scanning for controls..</string>
+    <string name="notification_content_subscribing_1">Subscribing to %s..</string>
+    <string name="notification_content_subscribing_2">Subscribing to unpaired control..</string>
+    <string name="notification_content_retry_1">Subscribing to %s (%d)..</string>
+    <string name="notification_content_retry_2">Subscribing to unpaired control (%d)..</string>
+    <string name="notification_content_running">Waveson Audio Remote is running</string>
+    <string name="notification_content_subscribed">Subscribed to %1$s</string>
+    <string name="notification_content_subscribed_unpaired">Subscribed to an unpaired control</string>
+    <string name="notification_content_subscribed_retried">Subscribed to %1$s (%2$d)</string>
+    <string name="notification_content_subscribed_unpaired_retried">Subscribed to an unpaired control (%d)</string>
+
+    <string name="notification_title_retry">Retry</string>
+    <string name="notification_title_stop">Stop</string>
+
+    <string name="notification_channel_one">W.A.R. DEFCON 1</string>
+    <string name="notification_channel_five">W.A.R. DEFCON 5</string>
+
+    <string name="logo_content_description">W.A.R. Logo</string>
+
+    <string name="no_device_scanned">Nothing to subscribe to!</string>
+    <string name="error_scan_failed">Bluetooth LE scan failed: %d</string>
+    <string name="error_unsub">Subscription to %s failed (%d;%d)</string>
+    <string name="error_subscription_1">Failed to discover services on %s</string>
+    <string name="error_subscription_2">Failed to subscribe to %s (%d)</string>
+    <string name="error_services_discovered">Failed to discover Bluetooth LE services: %d</string>
+    <string name="error_service_not_found">Failed to find Bluetooth LE service on remote control</string>
+    <string name="error_characteristic_not_found">Error: Bluetooth LE service on remote control does not possess W.A.R. characteristic</string>
+    <string name="error_characteristic_notification_1">Failed to enable notification(s) on W.A.R. characteristic</string>
+    <string name="error_characteristic_notification_2">Failed write configuration descriptor for W.A.R. characteristic</string>
+    <string name="error_bluetooth_unavailable">Bluetooth LE is not available</string>
+    <string name="error_test">Test</string>
+
+    <string name="unknown_device">(Unknown)</string>
+
+    <!-- Strings related to Settings -->
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_title_bonded_only">Paired Controls Only</string>
+    <string name="pref_description_bonded_only">
+        Only subscribe to W.A.R. Controls on paired devices
+    </string>
+    <string name="pref_title_gatt_delay">Interval between Subscription Stages</string>
+    <string name="pref_summary_gatt_delay">%s ms</string>
+    <string name="pref_title_volume_steps">Max Number of Volume-change Steps</string>
+    <string name="pref_title_auto_retry">Automatically Resubscribe</string>
+    <string name="pref_description_auto_retry">
+        Automatically attempt to resubscribe to the same W.A.R. Control if the connection fails
+    </string>
+    <string name="pref_title_retry_interval">Interval between Re-Subscription Attempts</string>
+</resources>

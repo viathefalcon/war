@@ -1,0 +1,42 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="bonded_only"
+        android:summary="@string/pref_description_bonded_only"
+        android:title="@string/pref_title_bonded_only" />
+
+    <EditTextPreference
+        android:defaultValue="128"
+        android:inputType="number"
+        android:key="gatt_delay"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_gatt_delay" />
+
+    <EditTextPreference
+        android:defaultValue="16"
+        android:inputType="number"
+        android:key="volume_steps"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_volume_steps" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="auto_retry"
+        android:summary="@string/pref_description_auto_retry"
+        android:title="@string/pref_title_auto_retry" />
+
+    <EditTextPreference
+        android:defaultValue="1024"
+        android:inputType="number"
+        android:key="retry_interval"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_retry_interval" />
+
+</PreferenceScreen>
