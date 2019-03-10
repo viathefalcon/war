@@ -12,7 +12,7 @@
         android:required="true" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_beta_launcher"
         android:label="@string/app_label"
         android:roundIcon="@mipmap/ic_beta_launcher_round"
@@ -26,6 +26,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:theme="@style/LaunchTheme"
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:excludeFromRecents="true"
@@ -33,9 +34,15 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:label="@string/title_activity_main"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait">
         </activity>
 
         <service

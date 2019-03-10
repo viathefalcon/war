@@ -188,7 +188,7 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             @Override
             public void run() {
                 LocalBroadcastManager.getInstance( RemoteControlService.this )
-                    .sendBroadcast( new Intent( MainActivity.FINISH_ACTION ) );
+                    .sendBroadcast( new Intent( FinishBroadcastReceiver.ACTION ) );
             }
         }, 1 );
     }
