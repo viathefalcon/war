@@ -7,10 +7,13 @@ package net.waveson.war;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import android.app.Activity;
 
 import android.util.Log;
+
+import android.view.View;
 
 import android.content.Intent;
 import android.content.Context;
@@ -32,15 +35,46 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class SplashActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    public static final String FINISH_ACTION = "net.waveson.war.splash.finish";
+
     private static final String LOG_TAG = SplashActivity.class.getName( );
 
     private static final int ENABLE_BT_REQUEST = 4321;
 
+    private boolean dismissed = false;
+
+    private Handler handler;
+
     private Prerequisites prerequisites;
 
-    private BroadcastReceiver localBroadcastReceiver;
+    private BroadcastReceiver localBroadcastReceiver = new BroadcastReceiver( ) {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (FINISH_ACTION.equals( intent.getAction( ) )){
+                handler.postDelayed( new Runnable( ) {
+                    @Override
+                    public void run() {
+                        SplashActivity.this.dismiss( );
+                    }
+                }, 5000 );
+            }
+        }
+    };
 
     private ServiceConnection serviceConnection = new StartRemoteControlServiceConnection( );
+
+    void dismiss() {
+
+        if (dismissed){
+            return;
+        }
+        dismissed = true;
+        LocalBroadcastManager.getInstance( this )
+            .unregisterReceiver( localBroadcastReceiver );
+        finish( );
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +88,9 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         }
 
         // Register to listen to be told to finish up
-        localBroadcastReceiver = new FinishBroadcastReceiver( this );
+        handler = new Handler( getMainLooper( ) );
         IntentFilter intentFilter = new IntentFilter( );
-        intentFilter.addAction( FinishBroadcastReceiver.ACTION );
+        intentFilter.addAction( FINISH_ACTION );
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance( this );
         lbm.registerReceiver( localBroadcastReceiver, intentFilter );
     }
@@ -162,5 +196,9 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         // Bind to the service
         Intent intent = new Intent( this, RemoteControlService.class );
         bindService( intent, serviceConnection, Context.BIND_AUTO_CREATE );
+    }
+
+    public void dismissSplash(View view) {
+        dismiss( );
     }
 }

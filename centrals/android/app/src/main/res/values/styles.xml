@@ -10,12 +10,11 @@
 
     <style name="AppTheme" parent="BaseAppTheme" />
 
-    <style name="LaunchTheme" parent="@style/Theme.AppCompat.Light">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@null</item>
+    <style name="BaseSplashTheme" parent="BaseAppTheme">
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="SplashTheme" parent="BaseSplashTheme" />
 
 </resources>

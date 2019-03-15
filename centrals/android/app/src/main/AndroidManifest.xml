@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-feature android:name="android.hardware.touchscreen"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -24,10 +26,13 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="WindowManagerPreference:SuppressWindowControlNavigationButton"
+                android:value="true"/>
         </activity>
         <activity
-            android:theme="@style/LaunchTheme"
-            android:name=".MainActivity"
+            android:theme="@style/SplashTheme"
+            android:name=".SplashActivity"
             android:label="@string/title_activity_main"
             android:excludeFromRecents="true"
             android:noHistory="true"
@@ -36,13 +41,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".SplashActivity"
-            android:label="@string/title_activity_main"
-            android:excludeFromRecents="true"
-            android:noHistory="true"
-            android:screenOrientation="portrait">
+            <meta-data
+                android:name="WindowManagerPreference:SuppressWindowControlNavigationButton"
+                android:value="true"/>
         </activity>
 
         <service

@@ -183,14 +183,9 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             started = true;
         }
 
-        // Signal the main activity that can finish
-        dispatcher.dispatch(new Runnable( ) {
-            @Override
-            public void run() {
-                LocalBroadcastManager.getInstance( RemoteControlService.this )
-                    .sendBroadcast( new Intent( FinishBroadcastReceiver.ACTION ) );
-            }
-        }, 1 );
+        // Signal the activity that it can finish
+        LocalBroadcastManager.getInstance( this )
+            .sendBroadcast( new Intent( SplashActivity.FINISH_ACTION ) );
     }
 
     @Override
