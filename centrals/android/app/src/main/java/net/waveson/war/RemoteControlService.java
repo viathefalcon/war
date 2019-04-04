@@ -184,8 +184,12 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         }
 
         // Signal the activity that it can finish
-        LocalBroadcastManager.getInstance( this )
-            .sendBroadcast( new Intent( SplashActivity.FINISH_ACTION ) );
+        handler.postDelayed( new Runnable( ) {
+            @Override
+            public void run() {
+                dismissSplash( );
+            }
+        }, 5000 ); // TODO: externalise this..?
     }
 
     @Override
@@ -487,6 +491,11 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         bluetoothGatt = null;
     }
 
+    private void dismissSplash() {
+        LocalBroadcastManager.getInstance( this )
+            .sendBroadcast( new Intent( SplashActivity.FINISH_ACTION ) );
+    }
+
     @Override
     public void onSubscriptionChanged(boolean subscribed) {
 
@@ -499,6 +508,8 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
 
         String content = null;
         if (subscribed){
+            dismissSplash( );
+
             if (name == null || name.isEmpty( )){
                 content = (retries == 0)
                     ? getString( R.string.notification_content_subscribed_unpaired )

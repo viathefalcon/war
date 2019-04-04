@@ -10,7 +10,7 @@
 
     <style name="AppTheme" parent="BaseAppTheme" />
 
-    <style name="BaseSplashTheme" parent="BaseAppTheme">
+    <style name="BaseSplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>

@@ -7,7 +7,6 @@ package net.waveson.war;
 import java.util.List;
 
 import android.os.Bundle;
-import android.os.Handler;
 
 import android.app.Activity;
 
@@ -27,7 +26,6 @@ import android.bluetooth.BluetoothAdapter;
 
 import android.support.annotation.NonNull;
 
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -43,22 +41,14 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
     private boolean dismissed = false;
 
-    private Handler handler;
-
     private Prerequisites prerequisites;
 
     private BroadcastReceiver localBroadcastReceiver = new BroadcastReceiver( ) {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (FINISH_ACTION.equals( intent.getAction( ) )){
-                handler.postDelayed( new Runnable( ) {
-                    @Override
-                    public void run() {
-                        SplashActivity.this.dismiss( );
-                    }
-                }, 5000 );
+                SplashActivity.this.dismiss( );
             }
         }
     };
@@ -81,14 +71,8 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_splash );
-        ActionBar actionBar = getSupportActionBar( );
-        if (actionBar != null){
-            // Show the 'Up' button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled( true );
-        }
 
         // Register to listen to be told to finish up
-        handler = new Handler( getMainLooper( ) );
         IntentFilter intentFilter = new IntentFilter( );
         intentFilter.addAction( FINISH_ACTION );
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance( this );
