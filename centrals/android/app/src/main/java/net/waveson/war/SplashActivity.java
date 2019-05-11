@@ -17,6 +17,7 @@ import android.view.View;
 import android.content.Intent;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.DialogInterface;
 import android.content.BroadcastReceiver;
 import android.content.ServiceConnection;
 
@@ -27,9 +28,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.NonNull;
 
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.content.LocalBroadcastManager;
+
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -118,6 +121,21 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         }
         if (granted == counter){
             onPermissionsGranted( );
+        }else{
+            new AlertDialog.Builder( this )
+                .setTitle( R.string.title_activity_main )
+                .setMessage( R.string.alert_content_permissions_not_granted )
+                .setPositiveButton(
+                    android.R.string.ok,
+                    new DialogInterface.OnClickListener( ) {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SplashActivity.this.dismiss( );
+                        }
+                    }
+                )
+                .setIcon( android.R.drawable.ic_dialog_alert )
+                .show( );
         }
     }
 
@@ -130,7 +148,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
                     requestPermissions( );
                 }else{
                     // Just bail
-                    finish( );
+                    dismiss( );
                 }
                 break;
 
@@ -156,7 +174,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
             case BLUETOOTH_UNAVAILABLE:
                 // Just bail
-                finish( );
+                dismiss( );
         }
         return false;
     }

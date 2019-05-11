@@ -7,6 +7,10 @@
     <string name="title_start_button">Start</string>
     <string name="title_stop_button">Stop</string>
 
+    <string name="alert_content_permissions_not_granted">
+        1 or more permissions not granted. Aborting.
+    </string>
+
     <string name="notification_content_scanning">Scanning for controls..</string>
     <string name="notification_content_subscribing_1">Subscribing to %s..</string>
     <string name="notification_content_subscribing_2">Subscribing to unpaired control..</string>

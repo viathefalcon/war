@@ -559,10 +559,34 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             final int stream = AudioManager.STREAM_MUSIC;
             final boolean muted = audioManager.isStreamMute( stream );
             if ((value & MUTE) == MUTE){
-                final int toggle = muted
-                    ? AudioManager.ADJUST_UNMUTE
-                    : AudioManager.ADJUST_MUTE;
-                audioManager.adjustStreamVolume( stream, toggle, 0 );
+                if ((value & TOGGLE_RINGER_MODE) == TOGGLE_RINGER_MODE){
+                    // If the ringer mode is vibrate, make it normal;
+                    // if it is normal, switch to vibrate
+                    //
+                    // If the ringer mode is anything else (i.e. silent),
+                    // then we ignore the command because I'm only interested
+                    // in being able to flip between normal and vibrate and
+                    // interacting with 'silent' involves obtaining additional
+                    // permissions (ACCESS_NOTIFICATION_POLICY)
+                    switch (audioManager.getRingerMode( )){
+                        case AudioManager.RINGER_MODE_NORMAL:
+                            audioManager.setRingerMode(
+                                AudioManager.RINGER_MODE_VIBRATE
+                            );
+                            break;
+
+                        case AudioManager.RINGER_MODE_VIBRATE:
+                            audioManager.setRingerMode(
+                                AudioManager.RINGER_MODE_NORMAL
+                            );
+                            break;
+                    }
+                }else{
+                    final int toggle = muted
+                        ? AudioManager.ADJUST_UNMUTE
+                        : AudioManager.ADJUST_MUTE;
+                    audioManager.adjustStreamVolume( stream, toggle, 0 );
+                }
             }else if (!muted){
                 final int volume_mask = VOLUME_UP | VOLUME_DOWN;
                 if ((value & volume_mask) != 0){

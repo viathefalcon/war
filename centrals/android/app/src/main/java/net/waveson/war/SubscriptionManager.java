@@ -35,7 +35,7 @@ class SubscriptionManager extends BluetoothGattCallback {
     private BlockingDeque<UUID> subscribed = new LinkedBlockingDeque<>( );
 
     private int mtu = 20;
-    private ChunkedStringBuffer deviceName;
+    private ChunkedUtf8StringBuffer deviceName;
 
     private final Dispatcher dispatcher;
     private long delay;
@@ -67,7 +67,7 @@ class SubscriptionManager extends BluetoothGattCallback {
         this.delay = delay;
         this.dispatcher = dispatcher;
         setCallback( callback );
-        this.deviceName = new ChunkedStringBuffer( deviceName );
+        this.deviceName = new ChunkedUtf8StringBuffer( deviceName );
     }
 
     synchronized void setCallback(Callback callback) {
@@ -425,13 +425,13 @@ class SubscriptionManager extends BluetoothGattCallback {
     }
 }
 
-class ChunkedStringBuffer {
+class ChunkedUtf8StringBuffer {
 
     private int offset = 0;
 
     private final byte[] bytes;
 
-    ChunkedStringBuffer(String arg) {
+    ChunkedUtf8StringBuffer(String arg) {
         bytes = arg.getBytes( StandardCharsets.UTF_8 );
     }
 

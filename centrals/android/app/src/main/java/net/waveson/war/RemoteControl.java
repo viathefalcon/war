@@ -19,6 +19,7 @@ interface RemoteControl {
     int MUTE = 0x00000020;
     int VOLUME_DOWN = 0x00000010;
     int VOLUME_UP = 0x00000008;
+    int TOGGLE_RINGER_MODE = (MUTE | VOLUME_DOWN | VOLUME_UP);
     int FORWARD = 0x00000004;
     int BACK = 0x00000002;
     int PLAY_PAUSE = 0x00000001;
