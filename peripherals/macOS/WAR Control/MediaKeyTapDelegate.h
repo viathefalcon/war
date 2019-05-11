@@ -17,7 +17,8 @@ typedef enum {
 	MediaKeyForward = 0x04,
 	MediaKeyVolumeUp = 0x08,
 	MediaKeyVolumeDown = 0x10,
-	MediaKeyVolumeMute = 0x20
+	MediaKeyVolumeMute = 0x20,
+	MedigaKeyToggleVibrate = (MediaKeyVolumeMute|MediaKeyVolumeDown|MediaKeyVolumeUp)
 
 } MediaKey;
 

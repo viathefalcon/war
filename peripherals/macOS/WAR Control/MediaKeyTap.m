@@ -139,7 +139,9 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 
 		case NX_KEYTYPE_MUTE:
 			NSLog( @"Mute (%02x)", keyState );
-			mediaKey = MediaKeyVolumeMute;
+			mediaKey = (event.modifierFlags & NSEventModifierFlagShift)
+				? MedigaKeyToggleVibrate
+				: MediaKeyVolumeMute;
 			break;
 
 		default:
