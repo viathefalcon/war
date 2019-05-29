@@ -13,6 +13,14 @@
 #define NX_KEYSTATE_UP      0x0A
 #define NX_KEYSTATE_DOWN    0x0B
 
+typedef enum {
+
+	MediaKeySwallow,
+	MediaKeyPassthru,
+	MediaKeyStripAlt
+
+} MediaKeyResult;
+
 CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 
 @interface MediaKeyTap ()
@@ -23,7 +31,7 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 
 @property (nonatomic, strong) NSObject<MediaKeyTapDelegate>* delegate;
 
-- (BOOL)keyEvent:(NSEvent*)event;
+- (MediaKeyResult)keyEvent:(NSEvent*)event;
 - (BOOL)disabledByTimeout;
 @end
 
@@ -43,7 +51,7 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 	return self;
 }
 
-- (BOOL) install
+- (BOOL)install
 {
 	if (!self.installed){
 		// Create the tap
@@ -77,7 +85,7 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 	return self.installed;
 }
 
-- (BOOL) remove
+- (BOOL)remove
 {
 	if (runLoopSource){
 		CFRunLoopRef runLoop = CFRunLoopGetCurrent( );
@@ -94,11 +102,14 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 	return (self.installed = NO);
 }
 
-- (BOOL)keyEvent:(NSEvent*)event
+- (MediaKeyResult)keyEvent:(NSEvent*)event
 {
 	// Look for an early out
 	if (!delegate.active){
-		return YES;
+		return MediaKeyPassthru;
+	}
+	if (event.modifierFlags & NSEventModifierFlagOption){
+		return MediaKeyStripAlt;
 	}
 
 	// Get out the data
@@ -147,20 +158,25 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 		default:
 			break;
 	}
-	if (mediaKey != MediaKeyInvalid){
-		switch (keyState){
-			case NX_KEYSTATE_DOWN:
-				return ![delegate keyDown:mediaKey];
-
-			case NX_KEYSTATE_UP:
-				return ![delegate keyUp:mediaKey];
-				
-			default:
-				NSLog( @"Unrecognised key state: %d", keyState );
-				break;
-		}
+	if (mediaKey == MediaKeyInvalid){
+		return MediaKeyPassthru;
 	}
-	return YES;
+
+	BOOL swallow = NO;
+	switch (keyState){
+		case NX_KEYSTATE_DOWN:
+			swallow = [delegate keyDown:mediaKey];
+			break;
+			
+		case NX_KEYSTATE_UP:
+			swallow = [delegate keyUp:mediaKey];
+			break;
+			
+		default:
+			NSLog( @"Unrecognised key state: %d", keyState );
+			break;
+	}
+	return (swallow ? MediaKeySwallow : MediaKeyPassthru);
 }
 
 - (BOOL)disabledByTimeout
@@ -183,7 +199,27 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
 		{
 			NSEvent* event = [NSEvent eventWithCGEvent:cgEvent];
 			if ([event subtype] == 8){
-				result = [self keyEvent:event];
+				switch ([self keyEvent:event]){
+					case MediaKeySwallow:
+						result = NO;
+						break;
+						
+					case MediaKeyStripAlt:
+					{
+						// Drop the bits which indicate that the Option key is down
+						CGEventSetFlags(
+							cgEvent,
+							(CGEventGetFlags( cgEvent ) & (~kCGEventFlagMaskAlternate))
+						);
+					}
+						
+						// Fall through
+						;
+						
+					default:
+						result = YES;
+						break;
+				}
 			}
 		}
 			break;
