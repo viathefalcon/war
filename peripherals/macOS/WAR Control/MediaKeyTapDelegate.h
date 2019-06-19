@@ -18,7 +18,7 @@ typedef enum {
 	MediaKeyVolumeUp = 0x08,
 	MediaKeyVolumeDown = 0x10,
 	MediaKeyVolumeMute = 0x20,
-	MedigaKeyToggleVibrate = (MediaKeyVolumeMute|MediaKeyVolumeDown|MediaKeyVolumeUp)
+	MediaKeyToggleVibrate = (MediaKeyVolumeMute|MediaKeyVolumeDown|MediaKeyVolumeUp)
 
 } MediaKey;
 
@@ -27,6 +27,7 @@ typedef enum {
 
 - (BOOL)keyDown:(MediaKey)key;
 - (BOOL)keyUp:(MediaKey)key;
+- (BOOL)eject;
 @end
 
 #endif // MediaKeyTapDelegate_h

@@ -151,10 +151,18 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 		case NX_KEYTYPE_MUTE:
 			NSLog( @"Mute (%02x)", keyState );
 			mediaKey = (event.modifierFlags & NSEventModifierFlagShift)
-				? MedigaKeyToggleVibrate
+				? MediaKeyToggleVibrate
 				: MediaKeyVolumeMute;
 			break;
 
+		case NX_KEYTYPE_EJECT:
+			if (event.modifierFlags & NSEventModifierFlagShift){
+				[delegate eject];
+			}
+			
+			// Fall through
+			;
+			
 		default:
 			break;
 	}

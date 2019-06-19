@@ -122,7 +122,6 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 {
 	// Signal any subscribers to go away
 	if (self.active){
-		
 		const int stop = WAR_STOP;
 		[self notify:((unsigned char) stop)];
 	}
@@ -168,6 +167,12 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 {
 	const unsigned int i = ((int)key | TWO_STEP);
 	return [self notify:((unsigned char)i)];
+}
+
+- (BOOL)eject
+{
+	const int stop = WAR_STOP;
+	return [self notify:((unsigned char) stop)];
 }
 
 #pragma mark Bluetooth Peripheral Delegate
