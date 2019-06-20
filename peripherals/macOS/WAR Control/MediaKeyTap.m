@@ -156,10 +156,14 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 			break;
 
 		case NX_KEYTYPE_EJECT:
-			if (event.modifierFlags & NSEventModifierFlagShift){
+			if ((keyState != NX_KEYSTATE_DOWN)
+				|| (event.modifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask)){
+				// Do nothing
+				;
+			}else{
 				[delegate eject];
 			}
-			
+
 			// Fall through
 			;
 			
