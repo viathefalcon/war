@@ -10,7 +10,7 @@
 #import "MediaKeyTap.h"
 #import "BLEPeripheral.h"
 
-@interface AppDelegate () <BLEPeripheralDelegate, NSUserNotificationCenterDelegate>
+@interface AppDelegate () <BLEPeripheralDelegate, MediaKeyTapDelegate, NSUserNotificationCenterDelegate>
 {
 	NSStatusItem* statusItem;
 	MediaKeyTap* tap;
@@ -23,6 +23,8 @@
 @end
 
 @implementation AppDelegate
+@dynamic active;
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	// Add the status item
@@ -38,7 +40,7 @@
 	
 	// Instantiate the BLE peripheral, and media key hook
 	peripheral = [[BLEPeripheral alloc] initWithDelegate:self];
-	tap = [[MediaKeyTap alloc] initWithDelegate:peripheral];
+	tap = [[MediaKeyTap alloc] initWithDelegate:self];
 
 	// Install the hook/handler
 	[peripheral start];
@@ -64,6 +66,7 @@
 	}
 }
 
+#pragma mark BLEPeripheral Delegate
 - (void)didSubscribe:(nonnull NSString *)central
 {
 	NSLog( @"didSubscribe: %@", central );
@@ -84,6 +87,7 @@
 	[defaultUserNotificationCenter deliverNotification:notification];
 }
 
+#pragma mark User Notification Center Delegate
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification
 {
 	NSLog( @"Delivered notification: %@ %@", notification.title, notification.informativeText );
@@ -92,6 +96,28 @@
 - (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
 {
 	NSLog( @"shouldPresentNotification: %@ %@", notification.title, notification.informativeText );
+	return YES;
+}
+
+#pragma mark Media Key Tap Delegate
+- (BOOL)active
+{
+	return (peripheral.subscribers > 0);
+}
+
+- (BOOL)keyDown:(MediaKey)key
+{
+	return [peripheral notify:key isDown:YES];
+}
+
+- (BOOL)keyUp:(MediaKey)key
+{
+	return [peripheral notify:key isDown:NO];
+}
+
+- (BOOL)eject
+{
+	[NSApp terminate:nil];
 	return YES;
 }
 @end

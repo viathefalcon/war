@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "MediaKeyTapDelegate.h"
+#import "MediaKey.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,10 +17,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)didUnsubscribe:(NSString*)central;
 @end
 
-@interface BLEPeripheral : NSObject <MediaKeyTapDelegate>
+@interface BLEPeripheral : NSObject
+@property (readonly) NSUInteger subscribers;
+
 - (instancetype)initWithDelegate:(NSObject<BLEPeripheralDelegate>*)aDelegate;
 - (void)start;
 - (void)stop;
+- (BOOL)notify:(MediaKey)key isDown:(BOOL)down;
 @end
 
 NS_ASSUME_NONNULL_END
