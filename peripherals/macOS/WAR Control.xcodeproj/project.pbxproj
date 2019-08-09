@@ -32,6 +32,7 @@
 		2F2524A9210F9F260044686A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2F2524AB210F9F260044686A /* WAR_Control.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WAR_Control.entitlements; sourceTree = "<group>"; };
 		2F25A179221C6C2100EB245C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2F9C0A0822FDEE3200FEBA02 /* MediaKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaKey.h; sourceTree = "<group>"; };
 		2FA664CA2156754300C755A7 /* BLEPeripheral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEPeripheral.h; sourceTree = "<group>"; };
 		2FA664CB2156754300C755A7 /* BLEPeripheral.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLEPeripheral.m; sourceTree = "<group>"; };
 		2FA664CD2156BC1700C755A7 /* MediaKeyTapDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaKeyTapDelegate.h; sourceTree = "<group>"; };
@@ -92,6 +93,7 @@
 				2FA664CB2156754300C755A7 /* BLEPeripheral.m */,
 				2FA664CD2156BC1700C755A7 /* MediaKeyTapDelegate.h */,
 				2F25A17A221C6C2100EB245C /* InfoPlist.strings */,
+				2F9C0A0822FDEE3200FEBA02 /* MediaKey.h */,
 			);
 			path = "WAR Control";
 			sourceTree = "<group>";

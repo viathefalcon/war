@@ -92,12 +92,13 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 
 @property (atomic, strong) NSObject<BLEPeripheralDelegate>* delegate;
 
-- (BOOL)notify:(unsigned char)byte;
+- (BOOL)send:(unsigned char)byte;
 - (void)advertise:(CBPeripheralManager *)peripheral;
 @end
 
 @implementation BLEPeripheral
 @synthesize delegate;
+@dynamic subscribers;
 
 - (instancetype)initWithDelegate:(NSObject<BLEPeripheralDelegate>*)delegate
 {
@@ -121,9 +122,9 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 - (void)stop
 {
 	// Signal any subscribers to go away
-	if (self.active){
+	if (atomic_load( &subscribedCentrals ) > 0){
 		const int stop = WAR_STOP;
-		[self notify:((unsigned char) stop)];
+		[self send:((unsigned char) stop)];
 	}
 	
 	if (peripheralManager.isAdvertising){
@@ -132,7 +133,21 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 	peripheralManager = nil;
 }
 
-- (BOOL)notify:(unsigned char)byte
+- (BOOL)notify:(MediaKey)key isDown:(BOOL)down
+{
+	unsigned int u = ((int)key | TWO_STEP);
+	if (down){
+		u |= ACTION_DOWN;
+	}
+	return [self send:((unsigned char)u)];
+}
+
+- (NSUInteger)subscribers
+{
+	return (NSUInteger) atomic_load( &subscribedCentrals );
+}
+
+- (BOOL)send:(unsigned char)byte
 {
 	NSData* data = [NSData dataWithBytes:&byte length:1];
 	const BOOL sent = [peripheralManager updateValue:data forCharacteristic:notifyCharacteristic onSubscribedCentrals:nil];
@@ -149,30 +164,6 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 {
 	NSDictionary* advertisementData = @{CBAdvertisementDataServiceUUIDsKey:@[service.UUID]};
 	[peripheral startAdvertising:advertisementData];
-}
-
-#pragma mark Media Key Delegate
-- (BOOL)active
-{
-	return (atomic_load( &subscribedCentrals ) > 0);
-}
-
-- (BOOL)keyDown:(MediaKey)key
-{
-	const unsigned int i = ((int)key | TWO_STEP | ACTION_DOWN);
-	return [self notify:((unsigned char)i)];
-}
-
-- (BOOL)keyUp:(MediaKey)key
-{
-	const unsigned int i = ((int)key | TWO_STEP);
-	return [self notify:((unsigned char)i)];
-}
-
-- (BOOL)eject
-{
-	const int stop = WAR_STOP;
-	return [self notify:((unsigned char) stop)];
 }
 
 #pragma mark Bluetooth Peripheral Delegate
