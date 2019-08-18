@@ -10,8 +10,8 @@
 
 #import "MediaKeyTap.h"
 
-#define NX_KEYSTATE_UP      0x0A
-#define NX_KEYSTATE_DOWN    0x0B
+#define NX_KEYSTATE_UP      0x0B
+#define NX_KEYSTATE_DOWN    0x0A
 
 typedef enum {
 
@@ -161,6 +161,7 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 				if (flags == NSEventModifierFlagShift){
 					NSLog( @"Eject! Eject! Eject!" );
 					[delegate eject];
+					break;
 				}
 			}
 

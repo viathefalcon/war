@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import java.lang.ref.WeakReference;
 
+import android.os.Build;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Handler;
@@ -44,6 +45,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class RemoteControlService extends Service implements RemoteControl, SubscriptionManager.Callback {
+
+    private static boolean oneplus = false;
+    static {
+        String[] strings = new String[]{
+            Build.BRAND,
+            Build.MANUFACTURER
+        };
+        for (String string : strings){
+            final boolean match = string.toLowerCase( ).contains( "oneplus" );
+            if (match){
+                oneplus = true;
+                break;
+            }
+        }
+    }
 
     private static final String TAG = RemoteControlService.class.getSimpleName();
 
@@ -266,8 +282,6 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
 
         // Stop ourselves
         Log.d( TAG, "onBluetoothUnhooked( );" );
-        Notifications.getInstance( )
-            .cancelNotification( this );
         stopForeground( true );
         stopSelf( startId );
 
@@ -541,6 +555,39 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             .updateNotification( this, content, flags );
     }
 
+    private void toggleRingerMode(AudioManager audioManager) {
+
+        // If we think we're on a OnePlus device, then do nothing
+        // because it seems to interfere w/the in-built hardware alert slider?
+        // (It confuses me, regardless..)
+        if (oneplus){
+            Log.d( TAG, "On a OnePlus device.." );
+            return;
+        }
+
+        // If the ringer mode is vibrate, make it normal;
+        // if it is normal, switch to vibrate
+        //
+        // If the ringer mode is anything else (i.e. silent),
+        // then we ignore the command because I'm only interested
+        // in being able to flip between normal and vibrate and
+        // interacting with 'silent' involves obtaining additional
+        // permissions (ACCESS_NOTIFICATION_POLICY)
+        switch (audioManager.getRingerMode( )){
+            case AudioManager.RINGER_MODE_NORMAL:
+                audioManager.setRingerMode(
+                    AudioManager.RINGER_MODE_VIBRATE
+                );
+                break;
+
+            case AudioManager.RINGER_MODE_VIBRATE:
+                audioManager.setRingerMode(
+                    AudioManager.RINGER_MODE_NORMAL
+                );
+                break;
+        }
+    }
+
     @Override
     public void onNotification(int value) {
 
@@ -551,96 +598,65 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             return;
         }
 
-        AudioManager audioManager = this.getSystemService( AudioManager.class );
-        final boolean apply = ((value & TWO_STEP) == TWO_STEP)
-            ? ((value & ACTION_DOWN) == 0)
-            : true;
-        if (apply){
-            final int stream = AudioManager.STREAM_MUSIC;
-            final boolean muted = audioManager.isStreamMute( stream );
-            if ((value & MUTE) == MUTE){
-                if ((value & TOGGLE_RINGER_MODE) == TOGGLE_RINGER_MODE){
-                    // If the ringer mode is vibrate, make it normal;
-                    // if it is normal, switch to vibrate
-                    //
-                    // If the ringer mode is anything else (i.e. silent),
-                    // then we ignore the command because I'm only interested
-                    // in being able to flip between normal and vibrate and
-                    // interacting with 'silent' involves obtaining additional
-                    // permissions (ACCESS_NOTIFICATION_POLICY)
-                    switch (audioManager.getRingerMode( )){
-                        case AudioManager.RINGER_MODE_NORMAL:
-                            audioManager.setRingerMode(
-                                AudioManager.RINGER_MODE_VIBRATE
-                            );
-                            break;
-
-                        case AudioManager.RINGER_MODE_VIBRATE:
-                            audioManager.setRingerMode(
-                                AudioManager.RINGER_MODE_NORMAL
-                            );
-                            break;
+        try {
+            AudioManager audioManager = this.getSystemService( AudioManager.class );
+            final boolean apply = ((value & TWO_STEP) == TWO_STEP)
+                ? ((value & ACTION_DOWN) == 0)
+                : true;
+            if (apply){
+                final int stream = AudioManager.STREAM_MUSIC;
+                final boolean muted = audioManager.isStreamMute( stream );
+                if ((value & MUTE) == MUTE){
+                    if ((value & TOGGLE_RINGER_MODE) == TOGGLE_RINGER_MODE){
+                        toggleRingerMode( audioManager );
+                    }else{
+                        audioManager.adjustStreamVolume(
+                            stream,
+                            (muted ? AudioManager.ADJUST_UNMUTE : AudioManager.ADJUST_MUTE),
+                            AudioManager.FLAG_SHOW_UI
+                        );
                     }
-                }else{
-                    final int toggle = muted
-                        ? AudioManager.ADJUST_UNMUTE
-                        : AudioManager.ADJUST_MUTE;
-                    audioManager.adjustStreamVolume( stream, toggle, 0 );
-                }
-            }else if (!muted){
-                final int volume_mask = VOLUME_UP | VOLUME_DOWN;
-                if ((value & volume_mask) != 0){
-                    // Get the current volume
-                    int v = audioManager.getStreamVolume( stream );
-
-                    // Get the bounds
-                    final int vmax = audioManager.getStreamMaxVolume( stream );
-                    final int vmin = 0; // TODO: call getStreamMinVolume()?
-                    final int steps = Math.min( vmax, preferences.getMaxVolumeSteps( ) );
-
-                    // Calculate the delta
-                    int delta = (vmax - vmin) / steps;
-                    if ((value & VOLUME_UP) == VOLUME_UP){
-                        // Do nothing
-                        ;
-                    }else if ((value & VOLUME_DOWN) == VOLUME_DOWN){
-                        delta *= -1;
+                }else if (!muted){
+                    final int volume_mask = VOLUME_UP | VOLUME_DOWN;
+                    if ((value & volume_mask) != 0){
+                        // If it's not up, it's down..
+                        final int direction = ((value & VOLUME_UP) == VOLUME_UP)
+                            ? AudioManager.ADJUST_RAISE
+                            : AudioManager.ADJUST_LOWER;
+                        audioManager.adjustStreamVolume(
+                            stream,
+                            direction,
+                            AudioManager.FLAG_SHOW_UI
+                        );
                     }
-                    Log.d( TAG, "Volume - steps: " + steps + "; delta: " + delta );
-
-                    // Clamp to the available range, and apply
-                    v += delta;
-                    if (v < vmin){
-                        v = vmin;
-                    }else if (v > vmax){
-                        v = vmax;
-                    }
-                    audioManager.setStreamVolume( stream, v, 0 );
                 }
             }
-        }
 
-        int event = KeyEvent.KEYCODE_UNKNOWN;
-        if ((value & PLAY_PAUSE) == PLAY_PAUSE){
-            event = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-        }else if ((value & BACK) == BACK){
-            event = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
-        }else if ((value & FORWARD) == FORWARD){
-            event = KeyEvent.KEYCODE_MEDIA_NEXT;
-        }
-        if (event == KeyEvent.KEYCODE_UNKNOWN){
-            return;
-        }
-        Log.d( TAG, "KeyEvent code: " + event );
+            int event = KeyEvent.KEYCODE_UNKNOWN;
+            if ((value & PLAY_PAUSE) == PLAY_PAUSE){
+                event = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+            }else if ((value & BACK) == BACK){
+                event = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
+            }else if ((value & FORWARD) == FORWARD){
+                event = KeyEvent.KEYCODE_MEDIA_NEXT;
+            }
+            if (event == KeyEvent.KEYCODE_UNKNOWN){
+                return;
+            }
+            Log.d( TAG, "KeyEvent code: " + event );
 
-        if ((value & TWO_STEP) == TWO_STEP){
-            final int action = ((value & ACTION_DOWN) == ACTION_DOWN)
-                ? KeyEvent.ACTION_DOWN
-                : KeyEvent.ACTION_UP;
-            audioManager.dispatchMediaKeyEvent( new KeyEvent( action, event ) );
-        }else{
-            audioManager.dispatchMediaKeyEvent( new KeyEvent( KeyEvent.ACTION_DOWN, event ) );
-            audioManager.dispatchMediaKeyEvent( new KeyEvent( KeyEvent.ACTION_UP, event ) );
+            if ((value & TWO_STEP) == TWO_STEP){
+                final int action = ((value & ACTION_DOWN) == ACTION_DOWN)
+                    ? KeyEvent.ACTION_DOWN
+                    : KeyEvent.ACTION_UP;
+                audioManager.dispatchMediaKeyEvent( new KeyEvent( action, event ) );
+            }else{
+                audioManager.dispatchMediaKeyEvent( new KeyEvent( KeyEvent.ACTION_DOWN, event ) );
+                audioManager.dispatchMediaKeyEvent( new KeyEvent( KeyEvent.ACTION_UP, event ) );
+            }
+        }
+        catch (Exception ex) {
+            Log.w( TAG, "Exception whilst handling notification", ex );
         }
     }
 }

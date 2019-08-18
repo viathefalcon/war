@@ -175,7 +175,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(Preferences.GATT_DELAY_KEY));
-            bindPreferenceSummaryToValue(findPreference(Preferences.VOLUME_STEPS_KEY));
             bindPreferenceSummaryToValue(findPreference(Preferences.RETRY_INTERVAL_KEY));
         }
 

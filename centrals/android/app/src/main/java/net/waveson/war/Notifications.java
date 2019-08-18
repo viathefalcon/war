@@ -99,12 +99,6 @@ class Notifications {
         }
     }
 
-    void cancelNotification(Service service) {
-        NotificationManagerCompat
-                .from( service )
-                .cancel( notificationId );
-    }
-
     private NotificationCompat.Action getAction(Service service, String action, int title) {
 
         Intent intent = new Intent( service, BroadcastReceiver.class );

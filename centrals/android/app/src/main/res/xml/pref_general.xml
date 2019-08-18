@@ -15,15 +15,6 @@
         android:singleLine="true"
         android:title="@string/pref_title_gatt_delay" />
 
-    <EditTextPreference
-        android:defaultValue="16"
-        android:inputType="number"
-        android:key="volume_steps"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_volume_steps" />
-
     <SwitchPreference
         android:defaultValue="false"
         android:key="auto_retry"

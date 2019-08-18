@@ -41,7 +41,7 @@
     <string name="error_characteristic_notification_1">Failed to enable notification(s) on W.A.R. characteristic</string>
     <string name="error_characteristic_notification_2">Failed write configuration descriptor for W.A.R. characteristic</string>
     <string name="error_bluetooth_unavailable">Bluetooth LE is not available</string>
-    <string name="error_test">Test</string>
+    <string name="error_send_devicename_failed">Failed to send device name to remote control</string>
 
     <string name="unknown_device">(Unknown)</string>
 
