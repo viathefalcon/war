@@ -234,6 +234,7 @@ class SubscriptionManager extends BluetoothGattCallback {
         BluetoothGattService service = gatt.getService( RemoteControl.SERVICE_UUID );
         if (service == null){
             Log.w( TAG, "W.A.R. service not found?" );
+            onError( R.string.error_send_devicename_failed );
             return;
         }
         for (BluetoothGattCharacteristic c : service.getCharacteristics( )){
@@ -242,10 +243,11 @@ class SubscriptionManager extends BluetoothGattCallback {
 
         // Get the characteristic
         BluetoothGattCharacteristic characteristic = service.getCharacteristic(
-                RemoteControl.NAME_UUID
+            RemoteControl.NAME_UUID
         );
         if (characteristic == null){
             Log.w( TAG, "Failed to retrieve the name characteristic." );
+            onError( R.string.error_send_devicename_failed );
             return;
         }
         if ((characteristic.getProperties( ) & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) == BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE){
@@ -266,6 +268,7 @@ class SubscriptionManager extends BluetoothGattCallback {
         }
         if (!result){
             deviceName.rewind( chunk.length );
+            onError( R.string.error_send_devicename_failed );
         }
     }
 

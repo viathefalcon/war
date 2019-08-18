@@ -13,14 +13,12 @@ class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener 
     private static final String TAG = Preferences.class.getSimpleName( );
 
     private boolean bondedOnly = false;
-    private int maxVolumeSteps = 16;
     private long gattDelay = 128L;
     private boolean autoRetry = false;
     private long retryInterval = 1024L;
 
     static final String GATT_DELAY_KEY = "gatt_delay";
     static final String BONDED_ONLY_KEY = "bonded_only";
-    static final String VOLUME_STEPS_KEY = "volume_steps";
     static final String AUTO_RETRY_KEY = "auto_retry";
     static final String RETRY_INTERVAL_KEY = "retry_interval";
 
@@ -63,22 +61,6 @@ class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener 
         gattDelay = init( shared, GATT_DELAY_KEY, gattDelay );
 
         try {
-            if (shared.contains( VOLUME_STEPS_KEY )){
-                maxVolumeSteps = Integer.parseInt(
-                    shared.getString( VOLUME_STEPS_KEY, Integer.toString( maxVolumeSteps ) )
-                );
-                Log.d( TAG, "Read " + maxVolumeSteps + " as max number of volume-change steps" );
-            }else{
-                shared.edit( )
-                    .putString( VOLUME_STEPS_KEY, Integer.toString( maxVolumeSteps ) )
-                    .apply( );
-            }
-        }
-        catch (Exception ex) {
-            Log.e( TAG,"Exception whilst retrieving/parsing the volume steps preference", ex );
-        }
-
-        try {
             if (shared.contains( AUTO_RETRY_KEY )){
                 autoRetry = shared.getBoolean( AUTO_RETRY_KEY, false );
             }else{
@@ -96,10 +78,6 @@ class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener 
 
     boolean isBondedOnly() {
         return bondedOnly;
-    }
-
-    int getMaxVolumeSteps() {
-        return maxVolumeSteps;
     }
 
     long getGattDelay() {
@@ -122,22 +100,6 @@ class Preferences implements SharedPreferences.OnSharedPreferenceChangeListener 
                 key,
                 bondedOnly
             );
-            return;
-        }
-
-        if (VOLUME_STEPS_KEY.equals( key )){
-            try {
-                final String defValue = Integer.toString(
-                    maxVolumeSteps
-                );
-                maxVolumeSteps = Integer.parseInt(
-                    shared.getString( key, defValue )
-                );
-                Log.d( TAG, VOLUME_STEPS_KEY + " changed to " + maxVolumeSteps );
-            }
-            catch (Exception ex) {
-                Log.w( TAG, "Exception whilst rec'ving update to " + VOLUME_STEPS_KEY );
-            }
             return;
         }
 
