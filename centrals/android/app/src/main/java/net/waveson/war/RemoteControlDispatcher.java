@@ -62,9 +62,7 @@ class RemoteControlDispatcher implements Dispatcher, SubscriptionManager.Callbac
         // Send a message because instantiating a new object (a Runnable) to convey 1 byte seems..
         // wasteful? Also, we can expect this to be called a lot during the lifetime of the app,
         // whereas we hope the error handlers will never/rarely be touched
-        handler.obtainMessage(
-            RemoteControl.NOTIFICATION_MSG,
-            value, 0
-        ).sendToTarget( );
+        handler.obtainMessage( RemoteControl.NOTIFICATION_MSG, value, 0 )
+            .sendToTarget( );
     }
 }

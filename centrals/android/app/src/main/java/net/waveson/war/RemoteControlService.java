@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
 import android.media.AudioManager;
+import android.media.ToneGenerator;
 
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothAdapter;
@@ -82,6 +83,8 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
     private int retries;
 
     private Preferences preferences;
+
+    private ToneGenerator toneGenerator;
 
     private static class RemoteControlHandler extends Handler {
 
@@ -158,11 +161,25 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         // Create the handler and dispatcher
         handler = new RemoteControlHandler( this );
         dispatcher = new RemoteControlDispatcher( this, handler );
+
+        // Initialise the tone generator
+        try {
+            AudioManager audioManager = this.getSystemService( AudioManager.class );
+            toneGenerator = new ToneGenerator( AudioManager.STREAM_NOTIFICATION, 100 );
+        }
+        catch (Exception ex) {
+            Log.w( TAG, "Exception whilst initialising tone generator", ex );
+            toneGenerator = null;
+        }
     }
 
     @Override
     public void onDestroy() {
 
+        if (toneGenerator != null){
+            toneGenerator.release( );
+        }
+        toneGenerator = null;
         PreferenceManager.getDefaultSharedPreferences( this )
             .unregisterOnSharedPreferenceChangeListener( preferences );
         Log.d( TAG, "Destroying Service.." );
@@ -324,6 +341,7 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         // Go do the scan
         final ScanSettings.Builder scanSettings = new ScanSettings.Builder( );
         scanSettings.setScanMode( ScanSettings.SCAN_MODE_LOW_LATENCY );
+        scanSettings.setMatchMode( ScanSettings.MATCH_MODE_STICKY );
 //		scanSettings.setCallbackType( ScanSettings.CALLBACK_TYPE_FIRST_MATCH );
         final ScanFilter.Builder scanFilter = new ScanFilter.Builder( );
         scanFilter.setServiceUuid( new ParcelUuid( SERVICE_UUID ) );
@@ -393,6 +411,7 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
 
         retries = 0;
         subscriptionManager = new SubscriptionManager(
+            this,
             dispatcher,
             bluetoothAdapter.getName( ),
             dispatcher,
@@ -588,46 +607,68 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         }
     }
 
+    private static final int STREAM_TYPE = AudioManager.STREAM_MUSIC;
+
+    private void adjustVolume(AudioManager audioManager, int direction) {
+
+        // Bounds check w/audio feedback
+        if (direction == AudioManager.ADJUST_RAISE){
+            final int max = audioManager.getStreamMaxVolume( STREAM_TYPE );
+            if (audioManager.getStreamVolume( STREAM_TYPE ) >= max){
+                toneGenerator.startTone( ToneGenerator.TONE_PROP_BEEP );
+                return;
+            }
+        }
+        audioManager.adjustStreamVolume(
+            STREAM_TYPE,
+            direction,
+            AudioManager.FLAG_SHOW_UI
+        );
+    }
+
     @Override
     public void onNotification(int value) {
 
         // Look for an early out
         if ((value & STOP) == STOP){
-            Log.d( TAG, "'STOP' rec'v'd" );
+            Log.d( TAG, "'STOP' recv'd" );
             stopIfStarted( );
             return;
         }
 
         try {
             AudioManager audioManager = this.getSystemService( AudioManager.class );
-            final boolean apply = ((value & TWO_STEP) == TWO_STEP)
-                ? ((value & ACTION_DOWN) == 0)
-                : true;
-            if (apply){
-                final int stream = AudioManager.STREAM_MUSIC;
-                final boolean muted = audioManager.isStreamMute( stream );
-                if ((value & MUTE) == MUTE){
+            final boolean muted = audioManager.isStreamMute( STREAM_TYPE );
+
+            if ((value & MUTE) == MUTE){
+                // Where we get separate reports for the up/down state of the key on the peripheral
+                // only apply the mute function *after* the key is released
+                final boolean apply = ((value & TWO_STAGE) != TWO_STAGE) ||
+                    ((value & ACTION_DOWN) == 0);
+                if (apply){
                     if ((value & TOGGLE_RINGER_MODE) == TOGGLE_RINGER_MODE){
                         toggleRingerMode( audioManager );
                     }else{
                         audioManager.adjustStreamVolume(
-                            stream,
+                            STREAM_TYPE,
                             (muted ? AudioManager.ADJUST_UNMUTE : AudioManager.ADJUST_MUTE),
                             AudioManager.FLAG_SHOW_UI
                         );
                     }
-                }else if (!muted){
+                }
+            }else if (!muted){
+                // Where we get separate reports for the up/down state of the key on the peripheral
+                // only apply volume changes when the key is pressed
+                final boolean apply = ((value & TWO_STAGE) != TWO_STAGE) ||
+                    ((value & ACTION_DOWN) == ACTION_DOWN);
+                if (apply){
                     final int volume_mask = VOLUME_UP | VOLUME_DOWN;
                     if ((value & volume_mask) != 0){
                         // If it's not up, it's down..
                         final int direction = ((value & VOLUME_UP) == VOLUME_UP)
                             ? AudioManager.ADJUST_RAISE
                             : AudioManager.ADJUST_LOWER;
-                        audioManager.adjustStreamVolume(
-                            stream,
-                            direction,
-                            AudioManager.FLAG_SHOW_UI
-                        );
+                        adjustVolume( audioManager, direction );
                     }
                 }
             }
@@ -645,7 +686,7 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
             }
             Log.d( TAG, "KeyEvent code: " + event );
 
-            if ((value & TWO_STEP) == TWO_STEP){
+            if ((value & TWO_STAGE) == TWO_STAGE){
                 final int action = ((value & ACTION_DOWN) == ACTION_DOWN)
                     ? KeyEvent.ACTION_DOWN
                     : KeyEvent.ACTION_UP;

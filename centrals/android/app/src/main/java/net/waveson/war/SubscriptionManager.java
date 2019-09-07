@@ -7,6 +7,7 @@ package net.waveson.war;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.HashSet;
 
@@ -15,7 +16,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import android.util.Log;
 
+import android.content.Context;
+
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -40,6 +45,8 @@ class SubscriptionManager extends BluetoothGattCallback {
     private final Dispatcher dispatcher;
     private long delay;
 
+    private final Context context;
+
     interface Callback {
         void onConnectionError(int string, Object... etc);
         void onError(int string, Object... args);
@@ -59,11 +66,13 @@ class SubscriptionManager extends BluetoothGattCallback {
         return this.state;
     }
 
-    SubscriptionManager(Callback callback,
+    SubscriptionManager(Context context,
+                        Callback callback,
                         String deviceName,
                         Dispatcher dispatcher,
                         long delay) {
 
+        this.context = context;
         this.delay = delay;
         this.dispatcher = dispatcher;
         setCallback( callback );
@@ -86,6 +95,28 @@ class SubscriptionManager extends BluetoothGattCallback {
             return;
         }
         callback.onConnectionError( string, etc );
+    }
+
+    private boolean isActuallyDisconnected(BluetoothDevice device) {
+
+        // Assume so if we can't know otherwise
+        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(
+            Context.BLUETOOTH_SERVICE
+        );
+        if (bluetoothManager == null){
+            return true;
+        }
+
+        // Iterate the GATT connected devices (likelihood: not very many?) until we find a match
+        final List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(
+            BluetoothProfile.GATT
+        );
+        for (BluetoothDevice connected : devices){
+            if (connected.equals( device )){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -116,9 +147,10 @@ class SubscriptionManager extends BluetoothGattCallback {
 
             default:
             {
+                final BluetoothDevice device = gatt.getDevice( );
                 final boolean ok = (status == BluetoothGatt.GATT_SUCCESS)
-                        && (newState == BluetoothProfile.STATE_CONNECTED);
-                if (!ok){
+                    && (newState == BluetoothProfile.STATE_CONNECTED);
+                if (!ok && isActuallyDisconnected( device )){
                     onConnectionError( R.string.error_unsub, status, newState );
                 }
             }
