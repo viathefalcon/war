@@ -29,6 +29,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import android.support.v4.content.ContextCompat;
+
 class Notifications {
 
     static final int FLAG_NOISE = 0x00000001;
@@ -116,7 +118,10 @@ class Notifications {
         );
     }
 
-    private Notification buildNotification(Service service, String content, String channelId, int flags) {
+    private Notification buildNotification(Service service,
+                                           String content,
+                                           String channelId,
+                                           int flags) {
 
         Intent settingsIntent = new Intent( service, BroadcastReceiver.class );
         settingsIntent.setAction( BroadcastReceiver.SETTINGS_ACTION );
@@ -130,6 +135,7 @@ class Notifications {
             .setContentTitle( getNotificationTitle( service ) )
             .setContentText( content )
             .setSmallIcon( R.drawable.ic_status_notification )
+            .setColor( ContextCompat.getColor( service, R.color.colorPrimaryDark ) )
             .setLargeIcon( largeIcon )
             .setContentIntent( contentIntent )
             .setOngoing( true )
@@ -138,7 +144,7 @@ class Notifications {
 
         // Fun with flags, etc..
         int nFlags = 0;
-        if ((flags & FLAG_NOISE) == FLAG_NOISE) {
+        if ((flags & FLAG_NOISE) == FLAG_NOISE){
             nFlags |= Notification.DEFAULT_SOUND;
         }
         if (isPreOreo( )){
@@ -175,7 +181,10 @@ class Notifications {
     }
 
     @TargetApi(26)
-    private NotificationChannel createNotificationChannel(Context context, String identifier, int name, int importance) {
+    private NotificationChannel createNotificationChannel(Context context,
+                                                          String identifier,
+                                                          int name,
+                                                          int importance) {
 
         NotificationChannel notificationChannel = new NotificationChannel(
                 identifier,
