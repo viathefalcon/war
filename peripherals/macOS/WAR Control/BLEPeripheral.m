@@ -87,7 +87,8 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 	CBMutableService* service;
 	
 	NSMutableDictionary* centrals;
-	dispatch_queue_t serial_queue;
+    dispatch_queue_t serial_queue;
+    NSMutableData* unsent;
 }
 
 @property (atomic, strong) NSObject<BLEPeripheralDelegate>* delegate;
@@ -105,7 +106,8 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 	self = [super init];
 	if (self){
 		centrals = [NSMutableDictionary dictionary];
-		serial_queue = dispatch_queue_create( "net.waveson.war.peripheral.queue", DISPATCH_QUEUE_SERIAL );
+        serial_queue = dispatch_queue_create( "net.waveson.war.peripheral.queue", DISPATCH_QUEUE_SERIAL );
+        unsent = [NSMutableData dataWithCapacity:16U];
 
 		self.delegate = delegate;
 	}
@@ -115,8 +117,8 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 - (void)start
 {
 	// Setup bluetooth
+    atomic_store( &subscribedCentrals, 0 );
 	peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
-	atomic_store( &subscribedCentrals, 0 );
 }
 
 - (void)stop
@@ -127,9 +129,11 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 		[self send:((unsigned char) stop)];
 	}
 	
-	if (peripheralManager.isAdvertising){
-		[peripheralManager stopAdvertising];
-	}
+    dispatch_sync( serial_queue, ^{
+        if (peripheralManager.isAdvertising){
+            [peripheralManager stopAdvertising];
+        }
+    } );
 	peripheralManager = nil;
 }
 
@@ -149,17 +153,19 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 
 - (BOOL)send:(unsigned char)byte
 {
-	NSData* data = [NSData dataWithBytes:&byte length:1];
-	const BOOL sent = [peripheralManager updateValue:data forCharacteristic:notifyCharacteristic onSubscribedCentrals:nil];
-	if (sent){
-		const int count = atomic_load( &subscribedCentrals );
-		NSLog( @"Sent %02x to %d central(s)", ((int)byte), count );
-	}else{
-		NSLog( @"Failed to notifiy all subscribed centrals?" );
-	}
-	return sent;
+    const int count = atomic_load( &(subscribedCentrals) );
+    if (count){
+        // Append the byte to the "queue" and then attempt to drain the queue
+        NSData* data = [NSData dataWithBytes:&byte length:1];
+        dispatch_async( serial_queue, ^{
+            [self->unsent appendData:data];
+        } );
+        [self peripheralManagerIsReadyToUpdateSubscribers:peripheralManager];
+        return YES;
+    }
+    return NO;
 }
-	
+
 - (void)advertise:(CBPeripheralManager *)peripheral
 {
 	NSDictionary* advertisementData = @{CBAdvertisementDataServiceUUIDsKey:@[service.UUID]};
@@ -167,6 +173,45 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 }
 
 #pragma mark Bluetooth Peripheral Delegate
+- (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral
+{
+    // Drain the "queue" of unsent notifications, if any
+    dispatch_async( serial_queue, ^{
+        const unsigned char* ptr = [self->unsent bytes];
+
+        NSUInteger u = 0U;
+        for (const NSUInteger bound = [self->unsent length]; u < bound; ){
+            // Check if there's anyone to send the unsent notification to
+            const int count = atomic_load( &(self->subscribedCentrals) );
+            if (count < 1){
+                // Yup, bail
+                u = bound;
+                continue;
+            }
+
+            // Try and send the next byte
+            const BOOL sent = [peripheral updateValue:[NSData dataWithBytes:ptr length:1U]
+                                    forCharacteristic:self->notifyCharacteristic
+                                 onSubscribedCentrals:nil];
+            if (sent){
+                NSLog( @"Sent %02x to %d central(s)", ((int) (*ptr)), count );
+
+                // Advance!
+                ++u;
+                ++ptr;
+                continue;
+            }
+            break;
+        }
+
+        // Remove from the queue the bytes that we know (think) we sent
+        // or couldn't be sent because there's no one left to send them to
+        if (u > 0U){
+            [self->unsent replaceBytesInRange:NSMakeRange(0, u) withBytes:NULL length:0];
+        }
+    } );
+}
+
 - (void)peripheralManagerDidUpdateState:(nonnull CBPeripheralManager *)peripheral
 {
 	switch (peripheral.state){
@@ -262,9 +307,13 @@ NSString *const NAME_UUID = @"7F2D6DF8-1610-4729-9038-A49163702EE2";
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
 {
-	NSLog( @"Status: %ld", (long)[CBPeripheralManager authorizationStatus] );
-	
-	if (error){
+    if (@available( macOS 10.15, * )){
+        NSLog( @"authorization: %ld", (long)[CBPeripheralManager authorization] );
+    }else{
+        NSLog( @"authorizationStatus: %ld", (long)[CBPeripheralManager authorizationStatus] );
+    }
+
+    if (error){
 		NSLog( @"Error advertising: %@", error );
 	}else{
 		NSLog( @"Did start advertising service." );

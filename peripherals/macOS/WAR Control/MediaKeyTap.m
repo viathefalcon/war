@@ -184,8 +184,8 @@ CGEventRef tapEventCallback(CGEventTapProxy, CGEventType, CGEventRef, void *);
 		case NX_KEYSTATE_UP:
 			swallow = [delegate keyUp:mediaKey];
 			break;
-			
-		default:
+
+        default:
 			NSLog( @"Unrecognised key state: %d", keyState );
 			break;
 	}
