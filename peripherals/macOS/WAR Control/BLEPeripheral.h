@@ -3,7 +3,7 @@
 //  WAR Control
 //
 //  Created by Stephen Higgins on 22/09/2018.
-//  Copyright © 2018-19 Stephen Higgins. All rights reserved.
+//  Copyright © 2018-21 Stephen Higgins. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
