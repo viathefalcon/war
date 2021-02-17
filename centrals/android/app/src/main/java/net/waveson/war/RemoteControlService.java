@@ -342,7 +342,7 @@ public class RemoteControlService extends Service implements RemoteControl, Subs
         final ScanSettings.Builder scanSettings = new ScanSettings.Builder( );
         scanSettings.setScanMode( ScanSettings.SCAN_MODE_LOW_LATENCY );
         scanSettings.setMatchMode( ScanSettings.MATCH_MODE_STICKY );
-//		scanSettings.setCallbackType( ScanSettings.CALLBACK_TYPE_FIRST_MATCH );
+//        scanSettings.setCallbackType( ScanSettings.CALLBACK_TYPE_FIRST_MATCH );
         final ScanFilter.Builder scanFilter = new ScanFilter.Builder( );
         scanFilter.setServiceUuid( new ParcelUuid( SERVICE_UUID ) );
         bluetoothLeScanner.startScan(
